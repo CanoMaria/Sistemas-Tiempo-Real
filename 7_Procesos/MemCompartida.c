@@ -1,13 +1,16 @@
+#include <sys/mman.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
-#include <sys/mman.h>
+
+// Para ejecutarlo debio usarse gcc -o EjMemCompartida EjMemCompartida.c -lrt -lpthread
 
 #define SH_SIZE 16
 
 int main(int argc, char** argv) {
+
 	// Crea una región de memoria compartida
 	int shm_fd = shm_open("/shm0", O_CREAT | O_RDWR, 0600);
 	
@@ -57,3 +60,10 @@ int main(int argc, char** argv) {
 	}
 	
 	// Cierra el descriptor de archivo de la
+	if (close(shm_fd) < 0) {
+		fprintf(stderr, "ERROR: Closing shared memory failed: %s\n", strerror(errno));
+		return 1;
+	}
+	
+	return 0;
+}
